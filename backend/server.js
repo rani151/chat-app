@@ -1,4 +1,6 @@
 // const express = require("express");
+
+import path from "path";
 import express from "express"
 import dotenv from "dotenv"
 import connectToMongoDB from "./db/connectToMongoDB.js";
@@ -7,13 +9,18 @@ import  authRoutes from "./routes/auth.routes.js"
 import  messageRoutes from "./routes/message.routes.js"
 import  userRoutes from "./routes/user.routes.js"
 import cookieParser from "cookie-parser";
+import { app, server } from "./socket/socket.js";
 
-// use dotenv for {PORT } -> enviroment variable 
-// const dotenv = require("dotenv");
 
-const app = express();
+
+// const app = express();
 const PORT = process.env.PORT || 5000 ;
- 
+
+
+const __dirname = path.resolve();
+
+
+
 dotenv.config();
 
 app.use(express.json());//to parse incoming req with JSON playloads
@@ -29,14 +36,18 @@ app.get ('/',  (req, res) => {
    res.send("how are you everyone .") 
 });
 
- 
 
-app.listen (PORT, () => {
-   //call mongodb fun  
-   connectToMongoDB()
-   
-   console.log( `server running on port  ${PORT}`)  
-} ); 
+ 
+app.use(express.static(path.join(__dirname, "/frontend/dist")));
+
+app.get("*", (req, res) => {
+	res.sendFile(path.join(__dirname, "frontend", "dist", "index.html"));
+});
+
+server.listen(PORT, () => {
+	connectToMongoDB();
+	console.log(`Server Running on port ${PORT}`);
+});
 
 
 
