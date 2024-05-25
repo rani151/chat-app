@@ -9,7 +9,8 @@ const Conversation = ({ conversation, lastIdx, emoji }) => {
 	const { selectedConversation, setSelectedConversation } = useConversation();
 	
 	const isSelected = selectedConversation?._id === conversation._id;
-	// socket --  
+
+	// socket --   to show online users 
 	const { onlineUsers } = useSocketContext();
 	const isOnline = onlineUsers.includes(conversation._id);
 
